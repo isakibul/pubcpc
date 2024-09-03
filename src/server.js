@@ -22,13 +22,6 @@ app.use(userRouter);
 
 app.use(expressWinstonErrorLogger);
 
-// logger.error("Hello world");
-// logger.warn("Hello world");
-// logger.info("Hello world");
-// logger.http("Hello world");
-// logger.verbose("Hello world");
-// logger.silly("Hello world");
-
 app.use((error, req, res, next) => {
   const errorObj = {
     message: error?.message || "Something went wrong",

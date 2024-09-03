@@ -1,5 +1,17 @@
+require("winston-daily-rotate-file");
 const { format, transports } = require("winston");
 const { json, timestamp, combine } = format;
+const { ElasticsearchTransport } = require("winston-elasticsearch");
+
+// elasticsearch transport
+const elasticSearchTransport = new ElasticsearchTransport({
+  level: "http",
+  clientOpts: {
+    node: "http://localhost:9200",
+  },
+  indexPrefix: "logs-express",
+  indexSuffixPattern: "YYYY-MM-DD",
+});
 
 // console transport
 const consoleTransport = new transports.Console({
@@ -7,23 +19,27 @@ const consoleTransport = new transports.Console({
   format: combine(timestamp(), json()),
 });
 
-// file transport
+// daily rotate file transport
 const fileTransport = (level, filename) => {
   return new transports.DailyRotateFile({
     level: level || "info",
     format: combine(timestamp(), json()),
-    filename: filename || "lnfo-%DATE%.log",
+    filename: filename || "info-%DATE%.log",
     zippedArchive: true,
     maxSize: "20m",
     maxFiles: "14d",
   });
 };
 
-const infoFileTransport = fileTransport("info", "logs/info/lnfo-%DATE%.log");
-const errorFileTransport = fileTransport("error", "logs/error/lnfo-%DATE%.log");
+const infoFileTransport = fileTransport("info", "logs/info/info-%DATE%.log");
+const errorFileTransport = fileTransport(
+  "error",
+  "logs/error/error-%DATE%.log"
+);
 
 module.exports = {
-  consoleTransport,
   infoFileTransport,
   errorFileTransport,
+  consoleTransport,
+  elasticSearchTransport,
 };
