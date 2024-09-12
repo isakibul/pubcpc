@@ -1,17 +1,6 @@
 require("winston-daily-rotate-file");
 const { format, transports } = require("winston");
 const { json, timestamp, combine } = format;
-const { ElasticsearchTransport } = require("winston-elasticsearch");
-
-// elasticsearch transport
-const elasticSearchTransport = new ElasticsearchTransport({
-  level: "http",
-  clientOpts: {
-    node: "http://localhost:9200",
-  },
-  indexPrefix: "logs-express",
-  indexSuffixPattern: "YYYY-MM-DD",
-});
 
 // console transport
 const consoleTransport = new transports.Console({
@@ -41,5 +30,4 @@ module.exports = {
   infoFileTransport,
   errorFileTransport,
   consoleTransport,
-  elasticSearchTransport,
 };
